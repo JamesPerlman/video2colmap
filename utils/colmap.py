@@ -51,18 +51,20 @@ def match_features(
 def reconstruct_scene(
     db_path: Path,
     images_path: Path,
-    output_path: Path,
+    project_path: Path,
     force_redo: bool = False
 ):
     print("************************")
     print("* Reconstructing scene *")
     print("************************")
 
-    if force_redo is False:
-        cameras_path = output_path / "sparse/0/cameras.bin"
-        if cameras_path.exists():
-            print("Scene reconstruction already exists. Skipping...")
-            return
+    output_path = project_path / "sparse"
+    cameras_path = output_path / "0/cameras.bin"
+    if force_redo is False and cameras_path.exists():
+        print("Scene reconstruction already exists. Skipping...")
+        return
+
+    output_path.mkdir(exist_ok=True)
 
     os.system(f" \
         colmap mapper \
